@@ -1,0 +1,64 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "labadf202401"
+		},
+		"ln_sqldb_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ln_sqldb'",
+			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=labsqlserver2024.database.windows.net;Initial Catalog=labsqldb"
+		},
+		"ln_adls_labaccount202401_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://labaccount202312r.dfs.core.windows.net/"
+		},
+		"ln_akv_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://lab-akv-accesspolicyr.vault.azure.net/"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "labadf202401_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"ln_sqldb_connectionString": {
+						"value": "[parameters('ln_sqldb_connectionString')]"
+					},
+					"ln_adls_labaccount202401_properties_typeProperties_url": {
+						"value": "[parameters('ln_adls_labaccount202401_properties_typeProperties_url')]"
+					},
+					"ln_akv_properties_typeProperties_baseUrl": {
+						"value": "[parameters('ln_akv_properties_typeProperties_baseUrl')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
