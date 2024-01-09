@@ -100,7 +100,8 @@
 		},
 		"variables": {
 			"v_age": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "22"
 			}
 		},
 		"annotations": []
