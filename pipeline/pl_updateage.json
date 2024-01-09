@@ -76,16 +76,16 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('update dbo.emp set age = ',\n        variables('v_age'),\n            ' where emp_name = ',\n        '''' ,\n        pipeline().parameters.p_name,\n        ''': select 1'\n)",
+							"type": "Expression"
+						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
 					"dataset": {
 						"referenceName": "ds_sqldb_sql",
 						"type": "DatasetReference"
-					},
-					"firstRowOnly": {
-						"value": "@concat('update dbo.emp set age = ',\n        variables('v_age'),\n            ' where emp_name = ',\n        '''' ,\n        pipeline().parameters.p_name,\n        ''': select 1'\n)",
-						"type": "Expression"
 					}
 				}
 			}
