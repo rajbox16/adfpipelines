@@ -17,16 +17,16 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('select * from dbo.emp where emp_name = ',\n        '''' ,\n        pipeline().parameters.p_name,\n        ''''\n)",
+							"type": "Expression"
+						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
 					"dataset": {
 						"referenceName": "ds_sqldb_sql",
 						"type": "DatasetReference"
-					},
-					"firstRowOnly": {
-						"value": "@concat('select * from dbo.emp where emp_name = ',\n        '''' ,\n        pipeline().parameters.p_name,\n        ''''\n)",
-						"type": "Expression"
 					}
 				}
 			},
