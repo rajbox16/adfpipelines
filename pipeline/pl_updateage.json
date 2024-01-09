@@ -92,7 +92,8 @@
 		],
 		"parameters": {
 			"p_name": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "EMP1"
 			}
 		},
 		"variables": {
