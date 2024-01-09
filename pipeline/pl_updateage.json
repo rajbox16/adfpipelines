@@ -27,7 +27,8 @@
 					"dataset": {
 						"referenceName": "ds_sqldb_sql",
 						"type": "DatasetReference"
-					}
+					},
+					"firstRowOnly": false
 				}
 			},
 			{
@@ -86,7 +87,8 @@
 					"dataset": {
 						"referenceName": "ds_sqldb_sql",
 						"type": "DatasetReference"
-					}
+					},
+					"firstRowOnly": false
 				}
 			}
 		],
