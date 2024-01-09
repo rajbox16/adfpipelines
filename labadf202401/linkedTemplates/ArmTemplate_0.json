@@ -114,7 +114,8 @@
 								"referenceName": "ds_sqldb_sql",
 								"type": "DatasetReference",
 								"parameters": {}
-							}
+							},
+							"firstRowOnly": false
 						}
 					},
 					{
@@ -174,7 +175,8 @@
 								"referenceName": "ds_sqldb_sql",
 								"type": "DatasetReference",
 								"parameters": {}
-							}
+							},
+							"firstRowOnly": false
 						}
 					}
 				],
