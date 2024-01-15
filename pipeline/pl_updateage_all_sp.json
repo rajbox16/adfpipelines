@@ -1,0 +1,154 @@
+{
+	"name": "pl_updateage_all_sp",
+	"properties": {
+		"activities": [
+			{
+				"name": "get_employee",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('select emp_name, dob_date from dbo.emp ')",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ds_sqldb_sql",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "process_empolyee_records",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "get_employee",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('get_employee').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "calculate_age",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "resetage",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "v_age",
+								"value": {
+									"value": "@string(sub(\n    int(formatDateTime(utcNow(),'yyyy')),\n    int(formatDateTime(item().dob_date,'yyyy'))  \n    ) \n)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "update_employee",
+							"type": "Lookup",
+							"dependsOn": [
+								{
+									"activity": "calculate_age",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderStoredProcedureName": "[dbo].[sp_update_emp_age]",
+									"storedProcedureParameters": {
+										"age": {
+											"type": "Int32",
+											"value": {
+												"value": "@variables('v_age')",
+												"type": "Expression"
+											}
+										},
+										"emp_name": {
+											"type": "String",
+											"value": {
+												"value": "@item().emp_name",
+												"type": "Expression"
+											}
+										}
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "ds_sqldb_sql",
+									"type": "DatasetReference"
+								},
+								"firstRowOnly": false
+							}
+						},
+						{
+							"name": "resetage",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "v_age",
+								"value": {
+									"value": "@concat('')",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"v_age": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}
